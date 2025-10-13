@@ -12,5 +12,14 @@ class CommentFactoryService {
         newComment.mentions = mentions || [];
         return newComment;
     };
+    updateComment = (updateCommentDto, comment, mentions) => {
+        if (updateCommentDto.content !== undefined) {
+            comment.content = updateCommentDto.content;
+        }
+        if (mentions !== undefined) {
+            comment.mentions = mentions;
+        }
+        return comment;
+    };
 }
 exports.default = CommentFactoryService;

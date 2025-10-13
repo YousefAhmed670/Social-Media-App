@@ -11,6 +11,8 @@ const router = (0, express_1.default)();
 router.use("/:postId/comment", __1.commentRouter);
 router.post("/", middleware_1.isAuthenticated, post_service_1.default.create);
 router.patch("/:id", middleware_1.isAuthenticated, post_service_1.default.React);
+router.put("/:id", middleware_1.isAuthenticated, post_service_1.default.updatePost);
 router.get("/:id", middleware_1.isAuthenticated, post_service_1.default.getSpecific);
 router.delete("/:id", middleware_1.isAuthenticated, post_service_1.default.deletePost);
+router.patch("/:id/freeze", middleware_1.isAuthenticated, post_service_1.default.freezePost);
 exports.default = router;

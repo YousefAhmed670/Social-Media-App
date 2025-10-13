@@ -34,3 +34,7 @@ export interface Disable2StepDTO {
   password: string;
   otp: string;
 }
+
+export interface BlockUserDTO {
+  userId: string;
+}

@@ -49,5 +49,6 @@ router.post(
   isValid(userValidation.disable2StepSchema),
   userService.disable2StepVerification
 );
+router.post("/block", isAuthenticated, userService.blockUser);
 
 export default router;

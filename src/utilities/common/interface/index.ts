@@ -19,6 +19,7 @@ export interface IUser {
   isVerified?: boolean;
   twoStepVerificationEnabled?: boolean;
   twoStepVerificationSecret?: string;
+  blockedUsers?: ObjectId[];
 }
 
 export interface IReaction {
@@ -38,6 +39,7 @@ export interface IPost {
   reactions: IReaction[];
   attachments?: IAttachment[];
   mentions?: ObjectId[];
+  isFrozen?: boolean;
 }
 
 export interface IComment {
@@ -49,6 +51,7 @@ export interface IComment {
   attachments?: IAttachment[];
   reactions: IReaction[];
   mentions?: ObjectId[];
+  isFrozen?: boolean;
 }
 
 export interface IBlackListToken {

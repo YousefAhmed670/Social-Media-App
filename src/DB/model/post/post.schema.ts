@@ -19,6 +19,7 @@ export const PostSchema = new Schema<utilities.IPost>(
     },
     reactions: [reactionSchema],
     mentions: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    isFrozen: { type: Boolean, default: false },
   },
   { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );

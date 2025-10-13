@@ -320,6 +320,41 @@ class UserService {
       success: true,
     });
   };
+
+  blockUser = async (req: Request, res: Response) => {
+    const { userId } = req.body;
+    const user = req.user;
+    if (userId === user._id.toString()) {
+      throw new utilities.BadRequestException("You cannot block yourself");
+    }
+    const userToBlock = await this.userRepository.exists({ _id: userId });
+    if (!userToBlock) {
+      throw new utilities.NotFoundException("User not found");
+    }
+    const blockedUsers = user.blockedUsers || [];
+    const isBlocked = blockedUsers.some(
+      (blockedUserId) => blockedUserId.toString() === userId
+    );
+    if (isBlocked) {
+      await this.userRepository.update(
+        { _id: user._id },
+        { $pull: { blockedUsers: userId } }
+      );
+      return res.status(200).json({
+        message: "User unblocked successfully",
+        success: true,
+      });
+    } else {
+      await this.userRepository.update(
+        { _id: user._id },
+        { $addToSet: { blockedUsers: userId } }
+      );
+      return res.status(200).json({
+        message: "User blocked successfully",
+        success: true,
+      });
+    }
+  };
 }
 
 export default new UserService();

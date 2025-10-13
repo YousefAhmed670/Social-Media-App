@@ -91,5 +91,45 @@ class CommentService {
             success: true,
         });
     };
+    updateComment = async (req, res) => {
+        const { id } = req.params;
+        const updateCommentDto = req.body;
+        const user = req.user;
+        const commentExists = await this.commentRepository.exists({ _id: id });
+        if (!commentExists) {
+            throw new utilities_1.NotFoundException("Comment not found");
+        }
+        if (commentExists.userId.toString() !== user._id.toString()) {
+            throw new utilities_1.UnauthorizedException("You are not authorized to update this comment");
+        }
+        let validatedMentions = [];
+        if (updateCommentDto.mentions?.length) {
+            validatedMentions = await (0, utilities_1.MentionProvider)(updateCommentDto.mentions, user, this.userRepository);
+        }
+        const updatedComment = this.commentFactoryService.updateComment(updateCommentDto, commentExists, validatedMentions);
+        await this.commentRepository.update({ _id: id }, updatedComment);
+        res.status(200).json({
+            message: "Comment updated successfully",
+            success: true,
+            data: { updatedComment },
+        });
+    };
+    freezeComment = async (req, res) => {
+        const { id } = req.params;
+        const user = req.user;
+        const commentExists = await this.commentRepository.exists({ _id: id });
+        if (!commentExists) {
+            throw new utilities_1.NotFoundException("Comment not found");
+        }
+        if (commentExists.userId.toString() !== user._id.toString()) {
+            throw new utilities_1.UnauthorizedException("You are not authorized to freeze this comment");
+        }
+        const isFrozen = !commentExists.isFrozen;
+        await this.commentRepository.update({ _id: id }, { isFrozen });
+        return res.status(200).json({
+            message: `Comment ${isFrozen ? "frozen" : "unfrozen"} successfully`,
+            success: true,
+        });
+    };
 }
 exports.default = new CommentService();

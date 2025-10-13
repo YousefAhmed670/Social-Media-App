@@ -21,6 +21,7 @@ export const CommentSchema = new Schema<IComment>(
     content: { type: String },
     reactions: [reactionSchema],
     mentions: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    isFrozen: { type: Boolean, default: false },
   },
   { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );

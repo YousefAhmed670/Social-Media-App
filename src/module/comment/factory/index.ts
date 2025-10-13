@@ -1,6 +1,6 @@
 import { ObjectId } from "mongoose";
 import { IComment, IPost, IUser } from "../../../utilities";
-import { createCommentDto } from "../comment.dto";
+import { createCommentDto, updateCommentDto } from "../comment.dto";
 import { Comment } from "../entity";
 
 export default class CommentFactoryService {
@@ -19,5 +19,19 @@ export default class CommentFactoryService {
     newComment.reactions = [];
     newComment.mentions = mentions || [];
     return newComment;
+  };
+
+  updateComment = (
+    updateCommentDto: updateCommentDto,
+    comment: IComment,
+    mentions?: ObjectId[]
+  ) => {
+    if (updateCommentDto.content !== undefined) {
+      comment.content = updateCommentDto.content;
+    }
+    if (mentions !== undefined) {
+      comment.mentions = mentions;
+    }
+    return comment;
   };
 }

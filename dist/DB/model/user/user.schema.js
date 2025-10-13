@@ -89,6 +89,7 @@ const userSchema = new mongoose_1.Schema({
     isVerified: { type: Boolean, default: false },
     twoStepVerificationEnabled: { type: Boolean, default: false },
     twoStepVerificationSecret: String,
+    blockedUsers: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "User" }],
 }, { timestamps: true, toObject: { virtuals: true }, toJSON: { virtuals: true } });
 userSchema
     .virtual("fullName")

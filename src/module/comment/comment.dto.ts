@@ -5,3 +5,8 @@ export interface createCommentDto {
     attachment?: any;
     mentions?: ObjectId[];
 }
+
+export interface updateCommentDto {
+    content?: string;
+    mentions?: ObjectId[];
+}

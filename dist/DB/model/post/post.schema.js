@@ -20,6 +20,7 @@ exports.PostSchema = new mongoose_1.Schema({
     },
     reactions: [common_1.reactionSchema],
     mentions: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "User" }],
+    isFrozen: { type: Boolean, default: false },
 }, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } });
 exports.PostSchema.virtual("comments", {
     ref: "Comment",

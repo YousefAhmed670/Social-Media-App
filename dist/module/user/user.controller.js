@@ -50,4 +50,5 @@ router.post("/2StepVerify", middleware_1.isAuthenticated, (0, middleware_1.isVal
 router.post("/2StepVerify/enable", middleware_1.isAuthenticated, (0, middleware_1.isValid)(userValidation.verify2StepSchema), user_service_1.default.enable2StepVerification);
 router.post("/2StepVerify/disable-request", middleware_1.isAuthenticated, (0, middleware_1.isValid)(userValidation.disable2StepRequestSchema), user_service_1.default.disable2StepVerificationRequest);
 router.post("/2StepVerify/disable", middleware_1.isAuthenticated, (0, middleware_1.isValid)(userValidation.disable2StepSchema), user_service_1.default.disable2StepVerification);
+router.post("/block", middleware_1.isAuthenticated, user_service_1.default.blockUser);
 exports.default = router;
