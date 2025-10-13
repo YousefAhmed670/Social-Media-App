@@ -25,6 +25,9 @@ class CommentService {
     if (!postExists) {
       throw new NotFoundException("Post not found");
     }
+    if (postExists.isFrozen) {
+      throw new UnauthorizedException("you can't comment on this post, Post is frozen");
+    }
     let commentExists;
     if (id) {
       commentExists = await this.commentRepository.exists({ _id: id });
@@ -135,6 +138,9 @@ class CommentService {
     const commentExists = await this.commentRepository.exists({ _id: id });
     if (!commentExists) {
       throw new NotFoundException("Comment not found");
+    }
+    if (commentExists.isFrozen) {
+      throw new UnauthorizedException("you can't update this comment, comment is frozen");
     }
     if (commentExists.userId.toString() !== user._id.toString()) {
       throw new UnauthorizedException(

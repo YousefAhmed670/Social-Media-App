@@ -105,6 +105,9 @@ class PostService {
         "You are not authorized to update this post"
       );
     }
+    if (postExists.isFrozen) {
+      throw new UnauthorizedException("you can't update this post, post is frozen");
+    }
     let validatedMentions: ObjectId[] = [];
     if (updatePostDto.mentions?.length) {
       validatedMentions = await MentionProvider(

@@ -1,5 +1,5 @@
 import { CommentRepository, PostRepository } from "../../../DB";
-import { NotFoundException } from "../../../utilities";
+import { NotFoundException, UnauthorizedException } from "../../../utilities";
 
 export const ReactProvider = async (
   repo: PostRepository | CommentRepository,
@@ -11,6 +11,9 @@ export const ReactProvider = async (
   const docExists = await repo.exists({ _id: id });
   if (!docExists) {
     throw new NotFoundException(`${doc} not found`);
+  }
+  if (docExists.isFrozen) {
+    throw new UnauthorizedException(`you can't react on this ${doc}, ${doc} is frozen`);
   }
   const userReactedIndex = docExists.reactions.findIndex(
     (react) => react.userId.toString() === userId.toString()
