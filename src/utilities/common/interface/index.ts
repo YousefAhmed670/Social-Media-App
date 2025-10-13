@@ -20,6 +20,9 @@ export interface IUser {
   twoStepVerificationEnabled?: boolean;
   twoStepVerificationSecret?: string;
   blockedUsers?: ObjectId[];
+  friends?: ObjectId[];
+  friendRequestsSent?: ObjectId[];
+  friendRequestsReceived?: ObjectId[];
 }
 
 export interface IReaction {

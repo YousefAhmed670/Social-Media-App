@@ -8,6 +8,10 @@ import {
   UpdateEmailDTO,
   UpdatePasswordDTO,
   Verify2StepDTO,
+  SendFriendRequestDTO,
+  RespondFriendRequestDTO,
+  UnfriendDTO,
+  DeleteFriendRequestDTO,
 } from "./user.dto";
 
 export const updatePasswordSchema = z.object<UpdatePasswordDTO>({
@@ -43,4 +47,20 @@ export const disable2StepRequestSchema = z.object<Disable2StepRequestDTO>({
 export const disable2StepSchema = z.object<Disable2StepDTO>({
   password: z.string().min(6, "Password must be at least 6 characters") as unknown as string,
   otp: z.string().length(6, "OTP must be 6 digits") as unknown as string,
+});
+
+export const sendFriendRequestSchema = z.object<SendFriendRequestDTO>({
+  userId: z.string().length(24, "User ID is required") as unknown as string,
+});
+
+export const respondFriendRequestSchema = z.object<RespondFriendRequestDTO>({
+  userId: z.string().length(24, "User ID is required") as unknown as string,
+});
+
+export const unfriendSchema = z.object<UnfriendDTO>({
+  userId: z.string().length(24, "User ID is required") as unknown as string,
+});
+
+export const deleteFriendRequestSchema = z.object<DeleteFriendRequestDTO>({
+  userId: z.string().length(24, "User ID is required") as unknown as string,
 });

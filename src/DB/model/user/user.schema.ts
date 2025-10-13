@@ -58,6 +58,9 @@ const userSchema = new Schema<IUser>(
     twoStepVerificationEnabled: { type: Boolean, default: false },
     twoStepVerificationSecret: String,
     blockedUsers: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    friends: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    friendRequestsSent: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    friendRequestsReceived: [{ type: Schema.Types.ObjectId, ref: "User" }],
   },
   { timestamps: true, toObject: { virtuals: true }, toJSON: { virtuals: true } }
 );

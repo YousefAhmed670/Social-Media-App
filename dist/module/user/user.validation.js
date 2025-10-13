@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.disable2StepSchema = exports.disable2StepRequestSchema = exports.verify2StepSchema = exports.request2StepSchema = exports.updateEmailSchema = exports.updateBasicInfoSchema = exports.updatePasswordSchema = void 0;
+exports.deleteFriendRequestSchema = exports.unfriendSchema = exports.respondFriendRequestSchema = exports.sendFriendRequestSchema = exports.disable2StepSchema = exports.disable2StepRequestSchema = exports.verify2StepSchema = exports.request2StepSchema = exports.updateEmailSchema = exports.updateBasicInfoSchema = exports.updatePasswordSchema = void 0;
 const zod_1 = require("zod");
 const utilities_1 = require("../../utilities");
 exports.updatePasswordSchema = zod_1.z.object({
@@ -30,4 +30,16 @@ exports.disable2StepRequestSchema = zod_1.z.object({
 exports.disable2StepSchema = zod_1.z.object({
     password: zod_1.z.string().min(6, "Password must be at least 6 characters"),
     otp: zod_1.z.string().length(6, "OTP must be 6 digits"),
+});
+exports.sendFriendRequestSchema = zod_1.z.object({
+    userId: zod_1.z.string().length(24, "User ID is required"),
+});
+exports.respondFriendRequestSchema = zod_1.z.object({
+    userId: zod_1.z.string().length(24, "User ID is required"),
+});
+exports.unfriendSchema = zod_1.z.object({
+    userId: zod_1.z.string().length(24, "User ID is required"),
+});
+exports.deleteFriendRequestSchema = zod_1.z.object({
+    userId: zod_1.z.string().length(24, "User ID is required"),
 });

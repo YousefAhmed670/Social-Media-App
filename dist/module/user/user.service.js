@@ -302,5 +302,106 @@ class UserService {
             });
         }
     };
+    sendFriendRequest = async (req, res) => {
+        const { userId } = req.body;
+        const user = req.user;
+        if (userId === user._id.toString()) {
+            throw new utilities.BadRequestException("You cannot send a friend request to yourself");
+        }
+        const targetUser = await this.userRepository.exists({ _id: userId });
+        if (!targetUser) {
+            throw new utilities.NotFoundException("User not found");
+        }
+        const friends = user.friends || [];
+        const isFriend = friends.some((friendId) => friendId.toString() === userId);
+        if (isFriend) {
+            throw new utilities.BadRequestException("You are already friends with this user");
+        }
+        const friendRequestsSent = user.friendRequestsSent || [];
+        const requestAlreadySent = friendRequestsSent.some((requestId) => requestId.toString() === userId);
+        if (requestAlreadySent) {
+            throw new utilities.BadRequestException("Friend request already sent to this user");
+        }
+        const friendRequestsReceived = user.friendRequestsReceived || [];
+        const requestAlreadyReceived = friendRequestsReceived.some((requestId) => requestId.toString() === userId);
+        if (requestAlreadyReceived) {
+            throw new utilities.BadRequestException("This user has already sent you a friend request. Please accept or reject it.");
+        }
+        await this.userRepository.update({ _id: user._id }, { $addToSet: { friendRequestsSent: userId } });
+        await this.userRepository.update({ _id: userId }, { $addToSet: { friendRequestsReceived: user._id } });
+        return res.status(200).json({
+            message: "Friend request sent successfully",
+            success: true,
+        });
+    };
+    acceptFriendRequest = async (req, res) => {
+        const { userId } = req.body;
+        const user = req.user;
+        const friendRequestsReceived = user.friendRequestsReceived || [];
+        const hasRequest = friendRequestsReceived.some((requestId) => requestId.toString() == userId);
+        if (!hasRequest) {
+            throw new utilities.BadRequestException("No friend request from this user");
+        }
+        await this.userRepository.update({ _id: user._id }, {
+            $pull: { friendRequestsReceived: userId },
+            $addToSet: { friends: userId },
+        });
+        await this.userRepository.update({ _id: userId }, {
+            $pull: { friendRequestsSent: user._id },
+            $addToSet: { friends: user._id },
+        });
+        return res.status(200).json({
+            message: "Friend request accepted successfully",
+            success: true,
+        });
+    };
+    rejectFriendRequest = async (req, res) => {
+        const { userId } = req.body;
+        const user = req.user;
+        const friendRequestsReceived = user.friendRequestsReceived || [];
+        const hasRequest = friendRequestsReceived.some((requestId) => requestId.toString() == userId);
+        if (!hasRequest) {
+            throw new utilities.BadRequestException("No friend request from this user");
+        }
+        await this.userRepository.update({ _id: user._id }, { $pull: { friendRequestsReceived: userId } });
+        await this.userRepository.update({ _id: userId }, { $pull: { friendRequestsSent: user._id } });
+        return res.status(200).json({
+            message: "Friend request rejected successfully",
+            success: true,
+        });
+    };
+    unfriend = async (req, res) => {
+        const { userId } = req.body;
+        const user = req.user;
+        if (userId === user._id.toString()) {
+            throw new utilities.BadRequestException("Invalid operation");
+        }
+        const friends = user.friends || [];
+        const isFriend = friends.some((friendId) => friendId.toString() == userId);
+        if (!isFriend) {
+            throw new utilities.BadRequestException("You are not friends with this user");
+        }
+        await this.userRepository.update({ _id: user._id }, { $pull: { friends: userId } });
+        await this.userRepository.update({ _id: userId }, { $pull: { friends: user._id } });
+        return res.status(200).json({
+            message: "Unfriended successfully",
+            success: true,
+        });
+    };
+    deleteFriendRequest = async (req, res) => {
+        const { userId } = req.body;
+        const user = req.user;
+        const friendRequestsSent = user.friendRequestsSent || [];
+        const hasRequest = friendRequestsSent.some((requestId) => requestId.toString() == userId);
+        if (!hasRequest) {
+            throw new utilities.BadRequestException("No friend request sent to this user");
+        }
+        await this.userRepository.update({ _id: user._id }, { $pull: { friendRequestsSent: userId } });
+        await this.userRepository.update({ _id: userId }, { $pull: { friendRequestsReceived: user._id } });
+        return res.status(200).json({
+            message: "Friend request deleted successfully",
+            success: true,
+        });
+    };
 }
 exports.default = new UserService();

@@ -38,3 +38,19 @@ export interface Disable2StepDTO {
 export interface BlockUserDTO {
   userId: string;
 }
+
+export interface SendFriendRequestDTO {
+  userId: string;
+}
+
+export interface RespondFriendRequestDTO {
+  userId: string;
+}
+
+export interface UnfriendDTO {
+  userId: string;
+}
+
+export interface DeleteFriendRequestDTO {
+  userId: string;
+}

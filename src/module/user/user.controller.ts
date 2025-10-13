@@ -51,4 +51,36 @@ router.post(
 );
 router.post("/block", isAuthenticated, userService.blockUser);
 
+// Friend request routes
+router.post(
+  "/friend-request/send",
+  isAuthenticated,
+  isValid(userValidation.sendFriendRequestSchema),
+  userService.sendFriendRequest
+);
+router.post(
+  "/friend-request/accept",
+  isAuthenticated,
+  isValid(userValidation.respondFriendRequestSchema),
+  userService.acceptFriendRequest
+);
+router.post(
+  "/friend-request/reject",
+  isAuthenticated,
+  isValid(userValidation.respondFriendRequestSchema),
+  userService.rejectFriendRequest
+);
+router.delete(
+  "/friend-request",
+  isAuthenticated,
+  isValid(userValidation.deleteFriendRequestSchema),
+  userService.deleteFriendRequest
+);
+router.delete(
+  "/friend",
+  isAuthenticated,
+  isValid(userValidation.unfriendSchema),
+  userService.unfriend
+);
+
 export default router;

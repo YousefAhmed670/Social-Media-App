@@ -90,6 +90,9 @@ const userSchema = new mongoose_1.Schema({
     twoStepVerificationEnabled: { type: Boolean, default: false },
     twoStepVerificationSecret: String,
     blockedUsers: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "User" }],
+    friends: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "User" }],
+    friendRequestsSent: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "User" }],
+    friendRequestsReceived: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "User" }],
 }, { timestamps: true, toObject: { virtuals: true }, toJSON: { virtuals: true } });
 userSchema
     .virtual("fullName")
