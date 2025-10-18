@@ -6,7 +6,6 @@ class ChatService {
     getChat = async (req, res) => {
         const { userId } = req.params;
         const userLoginId = req.user._id;
-        console.log("req.user", req.user);
         const chat = await this.chatRepository.getOne({ users: { $all: [userLoginId, userId] } }, {}, {
             populate: [
                 { path: "users", select: "fullName firstName lastName" },

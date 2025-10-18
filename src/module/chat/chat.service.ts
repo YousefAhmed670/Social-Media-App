@@ -7,7 +7,6 @@ class ChatService {
   getChat = async (req: Request, res: Response) => {
     const { userId } = req.params;
     const userLoginId = req.user._id;
-    console.log("req.user", req.user)
     const chat = await this.chatRepository.getOne(
       { users: { $all: [userLoginId, userId] } },
       {},
