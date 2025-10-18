@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.bootstrap = bootstrap;
+const cors_1 = __importDefault(require("cors"));
 const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
 const DB_1 = require("./DB");
 const module_1 = require("./module");
@@ -11,6 +12,7 @@ const cronJob_1 = require("./utilities/cronJob");
 function bootstrap(app, express) {
     (0, DB_1.connectDB)();
     app.use(express.json());
+    app.use((0, cors_1.default)({ origin: "*" }));
     const limiter = (0, express_rate_limit_1.default)({
         windowMs: 5 * 60 * 1000,
         limit: 10,
@@ -24,6 +26,7 @@ function bootstrap(app, express) {
     app.use("/user", module_1.userRouter);
     app.use("/post", module_1.postRouter);
     app.use("/comment", module_1.commentRouter);
+    app.use("/chat", module_1.chatRouter);
     (0, cronJob_1.startTokenCleanupJob)();
     app.use("/{*dummy}", (req, res, next) => {
         return res.status(404).json({ message: "Not Found", success: false });

@@ -34,8 +34,8 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isAuthenticated = void 0;
-const utilities = __importStar(require("../utilities"));
 const DB_1 = require("../DB");
+const utilities = __importStar(require("../utilities"));
 const isAuthenticated = async (req, res, next) => {
     const token = req.headers.authorization;
     if (!token) {
@@ -46,7 +46,7 @@ const isAuthenticated = async (req, res, next) => {
         throw new utilities.UnauthorizedException("Unauthorized");
     }
     const userRepository = new DB_1.UserRepository();
-    const user = await userRepository.exists({ _id: payload._id });
+    const user = await userRepository.getOne({ _id: payload._id }, {}, { populate: { path: "friends", select: "fullName firstName lastName" } });
     if (!user) {
         throw new utilities.NotFoundException("User not found");
     }

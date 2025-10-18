@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import * as utilities from "../utilities";
 import { TokenRepository, UserRepository } from "../DB";
+import * as utilities from "../utilities";
 
 export const isAuthenticated = async (
   req: Request,
@@ -16,7 +16,11 @@ export const isAuthenticated = async (
     throw new utilities.UnauthorizedException("Unauthorized");
   }
   const userRepository = new UserRepository();
-  const user = await userRepository.exists({ _id: payload._id });
+  const user = await userRepository.getOne(
+    { _id: payload._id },
+    {},
+    { populate: { path: "friends", select: "fullName firstName lastName" } }
+  );
   if (!user) {
     throw new utilities.NotFoundException("User not found");
   }

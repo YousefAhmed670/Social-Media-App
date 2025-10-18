@@ -41,6 +41,7 @@ const middleware_1 = require("../../middleware");
 const user_service_1 = __importDefault(require("./user.service"));
 const userValidation = __importStar(require("./user.validation"));
 const router = (0, express_1.Router)();
+router.get("/profile", middleware_1.isAuthenticated, user_service_1.default.showProfile);
 router.get("/:id", user_service_1.default.getProfile);
 router.patch("/password", middleware_1.isAuthenticated, (0, middleware_1.isValid)(userValidation.updatePasswordSchema), user_service_1.default.updatePassword);
 router.patch("/basic-info", middleware_1.isAuthenticated, (0, middleware_1.isValid)(userValidation.updateBasicInfoSchema), user_service_1.default.updateBasicInfo);
@@ -51,7 +52,6 @@ router.post("/2StepVerify/enable", middleware_1.isAuthenticated, (0, middleware_
 router.post("/2StepVerify/disable-request", middleware_1.isAuthenticated, (0, middleware_1.isValid)(userValidation.disable2StepRequestSchema), user_service_1.default.disable2StepVerificationRequest);
 router.post("/2StepVerify/disable", middleware_1.isAuthenticated, (0, middleware_1.isValid)(userValidation.disable2StepSchema), user_service_1.default.disable2StepVerification);
 router.post("/block", middleware_1.isAuthenticated, user_service_1.default.blockUser);
-// Friend request routes
 router.post("/friend-request/send", middleware_1.isAuthenticated, (0, middleware_1.isValid)(userValidation.sendFriendRequestSchema), user_service_1.default.sendFriendRequest);
 router.post("/friend-request/accept", middleware_1.isAuthenticated, (0, middleware_1.isValid)(userValidation.respondFriendRequestSchema), user_service_1.default.acceptFriendRequest);
 router.post("/friend-request/reject", middleware_1.isAuthenticated, (0, middleware_1.isValid)(userValidation.respondFriendRequestSchema), user_service_1.default.rejectFriendRequest);

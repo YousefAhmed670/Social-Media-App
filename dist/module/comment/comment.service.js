@@ -20,6 +20,9 @@ class CommentService {
         if (!postExists) {
             throw new utilities_1.NotFoundException("Post not found");
         }
+        if (postExists.isFrozen) {
+            throw new utilities_1.UnauthorizedException("you can't comment on this post, Post is frozen");
+        }
         let commentExists;
         if (id) {
             commentExists = await this.commentRepository.exists({ _id: id });
@@ -98,6 +101,9 @@ class CommentService {
         const commentExists = await this.commentRepository.exists({ _id: id });
         if (!commentExists) {
             throw new utilities_1.NotFoundException("Comment not found");
+        }
+        if (commentExists.isFrozen) {
+            throw new utilities_1.UnauthorizedException("you can't update this comment, comment is frozen");
         }
         if (commentExists.userId.toString() !== user._id.toString()) {
             throw new utilities_1.UnauthorizedException("You are not authorized to update this comment");

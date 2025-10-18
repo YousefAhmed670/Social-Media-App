@@ -7,6 +7,9 @@ const ReactProvider = async (repo, id, reaction, userId, doc) => {
     if (!docExists) {
         throw new utilities_1.NotFoundException(`${doc} not found`);
     }
+    if (docExists.isFrozen) {
+        throw new utilities_1.UnauthorizedException(`you can't react on this ${doc}, ${doc} is frozen`);
+    }
     const userReactedIndex = docExists.reactions.findIndex((react) => react.userId.toString() === userId.toString());
     if (userReactedIndex == -1) {
         await repo.update({ _id: id }, {

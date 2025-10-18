@@ -57,6 +57,20 @@ export interface IComment {
   isFrozen?: boolean;
 }
 
+export interface IChatMessage {
+  readonly _id: ObjectId;
+  content: string;
+  sender: ObjectId;
+  attachments?: IAttachment[];
+  reactions?: IReaction[];
+}
+
+export interface IChat {
+  readonly _id: ObjectId;
+  users: ObjectId[];
+  messages: ObjectId[];
+}
+
 export interface IBlackListToken {
   userId: ObjectId;
   token: string;

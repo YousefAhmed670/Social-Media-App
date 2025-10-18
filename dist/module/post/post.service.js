@@ -77,6 +77,9 @@ class PostService {
         if (postExists.userId.toString() !== user._id.toString()) {
             throw new utilities_1.UnauthorizedException("You are not authorized to update this post");
         }
+        if (postExists.isFrozen) {
+            throw new utilities_1.UnauthorizedException("you can't update this post, post is frozen");
+        }
         let validatedMentions = [];
         if (updatePostDto.mentions?.length) {
             validatedMentions = await (0, utilities_1.MentionProvider)(updatePostDto.mentions, user, this.userRepository);

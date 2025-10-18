@@ -5,6 +5,7 @@ import * as userValidation from "./user.validation";
 
 const router = Router();
 
+router.get("/profile", isAuthenticated, userService.showProfile)
 router.get("/:id", userService.getProfile);
 router.patch(
   "/password",
@@ -51,7 +52,6 @@ router.post(
 );
 router.post("/block", isAuthenticated, userService.blockUser);
 
-// Friend request routes
 router.post(
   "/friend-request/send",
   isAuthenticated,

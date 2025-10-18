@@ -1,12 +1,14 @@
+import cors from "cors";
 import { NextFunction, Request, Response, type Express } from "express";
 import rateLimit from "express-rate-limit";
 import { connectDB } from "./DB";
-import { authRouter, commentRouter, postRouter, userRouter } from "./module";
+import { authRouter, chatRouter, commentRouter, postRouter, userRouter } from "./module";
 import { AppError } from "./utilities";
 import { startTokenCleanupJob } from "./utilities/cronJob";
 export function bootstrap(app: Express, express: any) {
   connectDB();
   app.use(express.json());
+  app.use(cors({ origin: "*" }));
   const limiter = rateLimit({
     windowMs: 5 * 60 * 1000,
     limit: 10,
@@ -20,6 +22,7 @@ export function bootstrap(app: Express, express: any) {
   app.use("/user", userRouter);
   app.use("/post", postRouter);
   app.use("/comment", commentRouter);
+  app.use("/chat", chatRouter);
   startTokenCleanupJob();
   app.use("/{*dummy}", (req, res, next) => {
     return res.status(404).json({ message: "Not Found", success: false });

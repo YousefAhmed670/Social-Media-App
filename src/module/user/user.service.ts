@@ -20,6 +20,14 @@ class UserService {
   private readonly tokenRepository = new TokenRepository();
   constructor() {}
 
+  showProfile = async (req: Request, res: Response) => {
+    return res.status(200).json({
+      message: "done",
+      success: true,
+      data: { user: req.user },
+    });
+  };
+
   getProfile = async (req: Request, res: Response) => {
     const user = req.user;
     const userExists = await this.userRepository.getOne(
@@ -373,9 +381,7 @@ class UserService {
       throw new utilities.NotFoundException("User not found");
     }
     const friends = user.friends || [];
-    const isFriend = friends.some(
-      (friendId) => friendId.toString() === userId
-    );
+    const isFriend = friends.some((friendId) => friendId.toString() === userId);
     if (isFriend) {
       throw new utilities.BadRequestException(
         "You are already friends with this user"
@@ -479,9 +485,7 @@ class UserService {
       throw new utilities.BadRequestException("Invalid operation");
     }
     const friends = user.friends || [];
-    const isFriend = friends.some(
-      (friendId) => friendId.toString() == userId
-    );
+    const isFriend = friends.some((friendId) => friendId.toString() == userId);
     if (!isFriend) {
       throw new utilities.BadRequestException(
         "You are not friends with this user"

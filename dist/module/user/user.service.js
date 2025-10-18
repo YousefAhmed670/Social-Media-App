@@ -39,6 +39,13 @@ class UserService {
     userRepository = new DB_1.UserRepository();
     tokenRepository = new DB_1.TokenRepository();
     constructor() { }
+    showProfile = async (req, res) => {
+        return res.status(200).json({
+            message: "done",
+            success: true,
+            data: { user: req.user },
+        });
+    };
     getProfile = async (req, res) => {
         const user = req.user;
         const userExists = await this.userRepository.getOne({ _id: req.params.id }, {}, {
