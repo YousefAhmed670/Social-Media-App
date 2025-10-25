@@ -1,8 +1,17 @@
 import cors from "cors";
 import { NextFunction, Request, Response, type Express } from "express";
 import rateLimit from "express-rate-limit";
+import { GraphQLError } from "graphql";
+import { createHandler } from "graphql-http/lib/use/express";
+import { schema } from "./app.schema";
 import { connectDB } from "./DB";
-import { authRouter, chatRouter, commentRouter, postRouter, userRouter } from "./module";
+import {
+  authRouter,
+  chatRouter,
+  commentRouter,
+  postRouter,
+  userRouter,
+} from "./module";
 import { AppError } from "./utilities";
 import { startTokenCleanupJob } from "./utilities/cronJob";
 export function bootstrap(app: Express, express: any) {
@@ -17,6 +26,24 @@ export function bootstrap(app: Express, express: any) {
       throw new Error(options.message, { cause: options.statusCode });
     },
   });
+  app.all(
+    "/graphql",
+    createHandler({
+      schema,
+      formatError: (error: GraphQLError) => {
+        return {
+          message: error.message,
+          success: false,
+          path: error.path,
+          errorsDetails: error.originalError,
+        } as unknown as GraphQLError;
+      },
+      context: (req) => {
+        const token = req.headers["authorization"];
+        return { token };
+      },
+    })
+  );
   app.use("/auth", limiter);
   app.use("/auth", authRouter);
   app.use("/user", userRouter);

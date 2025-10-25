@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.bootstrap = bootstrap;
 const cors_1 = __importDefault(require("cors"));
 const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
+const express_1 = require("graphql-http/lib/use/express");
+const app_schema_1 = require("./app.schema");
 const DB_1 = require("./DB");
 const module_1 = require("./module");
 const cronJob_1 = require("./utilities/cronJob");
@@ -21,6 +23,21 @@ function bootstrap(app, express) {
             throw new Error(options.message, { cause: options.statusCode });
         },
     });
+    app.all("/graphql", (0, express_1.createHandler)({
+        schema: app_schema_1.schema,
+        formatError: (error) => {
+            return {
+                message: error.message,
+                success: false,
+                path: error.path,
+                errorsDetails: error.originalError,
+            };
+        },
+        context: (req) => {
+            const token = req.headers["authorization"];
+            return { token };
+        },
+    }));
     app.use("/auth", limiter);
     app.use("/auth", module_1.authRouter);
     app.use("/user", module_1.userRouter);
