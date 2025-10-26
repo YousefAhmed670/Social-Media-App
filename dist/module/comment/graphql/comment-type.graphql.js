@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.commentsResponse = exports.commentResponse = exports.CommentType = void 0;
+exports.commentMutationResponse = exports.commentsResponse = exports.commentResponse = exports.CommentType = void 0;
 const graphql_1 = require("graphql");
 const user_type_graphql_1 = require("../../user/graphql/user-type.graphql");
 const post_type_graphql_1 = require("../../post/graphql/post-type.graphql");
@@ -38,5 +38,12 @@ exports.commentsResponse = new graphql_1.GraphQLObjectType({
         message: { type: graphql_1.GraphQLString },
         success: { type: graphql_1.GraphQLBoolean },
         data: { type: new graphql_1.GraphQLList(exports.CommentType) },
+    }),
+});
+exports.commentMutationResponse = new graphql_1.GraphQLObjectType({
+    name: "CommentMutation",
+    fields: () => ({
+        message: { type: graphql_1.GraphQLString },
+        success: { type: graphql_1.GraphQLBoolean },
     }),
 });

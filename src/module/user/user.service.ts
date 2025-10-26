@@ -116,6 +116,12 @@ class UserService {
     ) {
       throw new utilities.BadRequestException("No data provided to update");
     }
+    if (updateData.gender && !Object.values(utilities.GENDER).includes(updateData.gender)) {
+      throw new utilities.BadRequestException("Invalid gender");
+    }
+    if (updateData.phoneNumber) {
+      updateData.phoneNumber = utilities.cryptPhone(updateData.phoneNumber);
+    }
     await this.userRepository.update({ _id: user._id }, updateData);
     return res.status(200).json({
       message: "Profile updated successfully",

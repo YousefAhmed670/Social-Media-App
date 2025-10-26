@@ -49,3 +49,11 @@ export const commentsResponse: GraphQLOutputType = new GraphQLObjectType({
     data: { type: new GraphQLList(CommentType) },
   }),
 });
+
+export const commentMutationResponse: GraphQLOutputType = new GraphQLObjectType({
+  name: "CommentMutation",
+  fields: () => ({
+    message: { type: GraphQLString },
+    success: { type: GraphQLBoolean },
+  }),
+});

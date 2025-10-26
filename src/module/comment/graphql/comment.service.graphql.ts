@@ -4,6 +4,9 @@ import { NotFoundException } from "../../../utilities";
 import {
   getCommentsValidation,
   getCommentValidation,
+  createCommentValidation,
+  updateCommentValidation,
+  deleteCommentValidation,
 } from "./comment-validation.graphql";
 
 const commentRepository = new CommentRepository();
@@ -57,5 +60,58 @@ export const getComments = async (_, args, context) => {
     message: "Comments found successfully",
     success: true,
     data: comments,
+  };
+};
+
+export const createComment = async (_, args, context) => {
+  await isAuthenticatedGraphql(context);
+  await isValidGraphql(createCommentValidation, args);
+  const comment = await commentRepository.create({
+    userId: context.user._id,
+    postId: args.postId,
+    parentId: args.parentId,
+    content: args.content,
+    attachments: args.attachments,
+    mentions: args.mentions,
+  });
+  return {
+    message: "Comment created successfully",
+    success: true,
+    data: comment,
+  };
+};
+
+export const updateComment = async (_, args, context) => {
+  await isAuthenticatedGraphql(context);
+  await isValidGraphql(updateCommentValidation, args);
+  const updateData: any = {};
+  if (args.content) updateData.content = args.content;
+  if (args.attachments !== undefined) updateData.attachments = args.attachments;
+  if (args.mentions !== undefined) updateData.mentions = args.mentions;
+  
+  const comment = await commentRepository.update(
+    { _id: args.id ,userId: context.user._id},
+    { $set: updateData }
+  );
+  if (!comment) {
+    throw new NotFoundException("Comment not found");
+  }
+  return {
+    message: "Comment updated successfully",
+    success: true,
+    data: comment,
+  };
+};
+
+export const deleteComment = async (_, args, context) => {
+  await isAuthenticatedGraphql(context);
+  await isValidGraphql(deleteCommentValidation, args);
+  const comment = await commentRepository.delete({ _id: args.id });
+  if (!comment) {
+    throw new NotFoundException("Comment not found");
+  }
+  return {
+    message: "Comment deleted successfully",
+    success: true,
   };
 };

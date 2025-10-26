@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.usersResponse = exports.userResponse = exports.UserType = void 0;
+exports.userMutationResponse = exports.usersResponse = exports.userResponse = exports.UserType = void 0;
 const graphql_1 = require("graphql");
 exports.UserType = new graphql_1.GraphQLObjectType({
     name: "User",
@@ -34,5 +34,12 @@ exports.usersResponse = new graphql_1.GraphQLObjectType({
         message: { type: graphql_1.GraphQLString },
         success: { type: graphql_1.GraphQLBoolean },
         data: { type: new graphql_1.GraphQLList(exports.UserType) },
+    }),
+});
+exports.userMutationResponse = new graphql_1.GraphQLObjectType({
+    name: "UserMutation",
+    fields: () => ({
+        message: { type: graphql_1.GraphQLString },
+        success: { type: graphql_1.GraphQLBoolean },
     }),
 });

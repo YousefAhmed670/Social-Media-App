@@ -54,3 +54,11 @@ export const postsResponse: GraphQLOutputType = new GraphQLObjectType({
     data: { type: new GraphQLList(PostType) },
   }),
 });
+
+export const postMutationResponse: GraphQLOutputType = new GraphQLObjectType({
+  name: "PostMutation",
+  fields: () => ({
+    message: { type: GraphQLString },
+    success: { type: GraphQLBoolean },
+  }),
+});

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUsers = exports.getUser = void 0;
+exports.deleteUser = exports.updateUser = exports.getUsers = exports.getUser = void 0;
 const DB_1 = require("../../../DB");
 const middleware_1 = require("../../../middleware");
 const utilities_1 = require("../../../utilities");
@@ -34,3 +34,37 @@ const getUsers = async (_, args, context) => {
     };
 };
 exports.getUsers = getUsers;
+const updateUser = async (_, args, context) => {
+    await (0, middleware_1.isAuthenticatedGraphql)(context);
+    await (0, middleware_1.isValidGraphql)(user_validation_graphql_1.updateUserValidation, args);
+    const updateData = {};
+    if (args.firstName)
+        updateData.firstName = args.firstName;
+    if (args.lastName)
+        updateData.lastName = args.lastName;
+    if (args.phoneNumber !== undefined)
+        updateData.phoneNumber = (0, utilities_1.cryptPhone)(args.phoneNumber);
+    if (args.gender)
+        updateData.gender = args.gender;
+    const user = await userRepository.update({ _id: context.user._id }, { $set: updateData });
+    if (!user) {
+        throw new utilities_1.NotFoundException("User not found");
+    }
+    return {
+        message: "User updated successfully",
+        success: true,
+    };
+};
+exports.updateUser = updateUser;
+const deleteUser = async (_, args, context) => {
+    await (0, middleware_1.isAuthenticatedGraphql)(context);
+    const user = await userRepository.delete({ _id: context.user._id });
+    if (!user) {
+        throw new utilities_1.NotFoundException("User not found");
+    }
+    return {
+        message: "User deleted successfully",
+        success: true,
+    };
+};
+exports.deleteUser = deleteUser;

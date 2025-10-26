@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPosts = exports.getSpecificPost = void 0;
+exports.deletePost = exports.updatePost = exports.createPost = exports.getPosts = exports.getSpecificPost = void 0;
 const DB_1 = require("../../../DB");
 const middleware_1 = require("../../../middleware");
 const utilities_1 = require("../../../utilities");
@@ -13,7 +13,6 @@ const getSpecificPost = async (_, args, context) => {
         populate: [
             { path: "userId" },
             { path: "reactions", populate: { path: "userId" } },
-            { path: "comments", populate: { path: "userId" } },
         ],
     });
     if (!post) {
@@ -47,3 +46,53 @@ const getPosts = async (_, args, context) => {
     };
 };
 exports.getPosts = getPosts;
+const createPost = async (_, args, context) => {
+    await (0, middleware_1.isAuthenticatedGraphql)(context);
+    await (0, middleware_1.isValidGraphql)(post_validation_graphql_1.createPostValidation, args);
+    const post = await postRepository.create({
+        userId: context.user._id,
+        content: args.content,
+        attachments: args.attachments,
+        mentions: args.mentions,
+    });
+    return {
+        message: "Post created successfully",
+        success: true,
+        data: post,
+    };
+};
+exports.createPost = createPost;
+const updatePost = async (_, args, context) => {
+    await (0, middleware_1.isAuthenticatedGraphql)(context);
+    await (0, middleware_1.isValidGraphql)(post_validation_graphql_1.updatePostValidation, args);
+    const updateData = {};
+    if (args.content)
+        updateData.content = args.content;
+    if (args.attachments !== undefined)
+        updateData.attachments = args.attachments;
+    if (args.mentions !== undefined)
+        updateData.mentions = args.mentions;
+    const post = await postRepository.update({ _id: args.id, userId: context.user._id }, { $set: updateData });
+    if (!post) {
+        throw new utilities_1.NotFoundException("Post not found");
+    }
+    return {
+        message: "Post updated successfully",
+        success: true,
+        data: post,
+    };
+};
+exports.updatePost = updatePost;
+const deletePost = async (_, args, context) => {
+    await (0, middleware_1.isAuthenticatedGraphql)(context);
+    await (0, middleware_1.isValidGraphql)(post_validation_graphql_1.deletePostValidation, args);
+    const post = await postRepository.delete({ _id: args.id });
+    if (!post) {
+        throw new utilities_1.NotFoundException("Post not found");
+    }
+    return {
+        message: "Post deleted successfully",
+        success: true,
+    };
+};
+exports.deletePost = deletePost;

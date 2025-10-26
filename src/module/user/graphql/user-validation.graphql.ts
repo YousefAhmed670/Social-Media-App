@@ -9,3 +9,10 @@ export const getUsersValidation = z.object({
   page: z.number().min(1).optional(),
   count: z.number().min(1).optional(),
 });
+
+export const updateUserValidation = z.object({
+  firstName: z.string().min(1).optional(),
+  lastName: z.string().min(1).optional(),
+  phoneNumber: z.string().optional(),
+  gender: z.enum(["male", "female"]).optional(),
+});

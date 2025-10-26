@@ -45,3 +45,11 @@ export const usersResponse: GraphQLOutputType = new GraphQLObjectType({
     data: { type: new GraphQLList(UserType) },
   }),
 });
+
+export const userMutationResponse: GraphQLOutputType = new GraphQLObjectType({
+  name: "UserMutation",
+  fields: () => ({
+    message: { type: GraphQLString },
+    success: { type: GraphQLBoolean },
+  }),
+});
